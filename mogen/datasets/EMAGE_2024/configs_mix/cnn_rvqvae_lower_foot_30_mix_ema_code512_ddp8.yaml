@@ -81,4 +81,4 @@ grad_norm: 0.99
 # vqvae_latent_scale: 5
 epochs: 30
 test_period: 1
-motioncraft_config: configs/EMGAE/align_t2m_s2g_m2d_upper.py
+motioncraft_config: configs/EMGAE/align_t2m_s2g_m2d_lower.py

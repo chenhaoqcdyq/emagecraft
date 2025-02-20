@@ -100,5 +100,5 @@ model = dict(type='MotionDiffusion',
             #  inference_type='ddpm',
              inference_type='ddim',
              loss_reduction='batch')
-data = dict(samples_per_gpu=16)
+data = dict(samples_per_gpu=32)
 # data = dict(samples_per_gpu=128)
