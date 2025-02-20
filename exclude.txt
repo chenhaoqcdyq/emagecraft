@@ -1,0 +1,6 @@
+data
+data_bk
+outputs
+work_dirs
+.vscode
+.git
