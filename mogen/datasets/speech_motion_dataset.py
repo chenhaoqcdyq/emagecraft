@@ -131,7 +131,7 @@ class SpeechMotionDataset(BaseMotionDataset):
         all_tensor = []
         betas=torch.zeros((motion.shape[0], 300),device=device).float()
         # for i in range(s):
-        batch_size = 1024  # 根据显存大小调整批量大小
+        batch_size = 4096  # 根据显存大小调整批量大小
         num_batches = (motion.shape[0] + batch_size - 1) // batch_size
 
         all_tensor = []

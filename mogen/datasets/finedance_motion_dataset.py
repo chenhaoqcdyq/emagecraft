@@ -162,7 +162,7 @@ class FinedanceMotionDataset(BaseMotionDataset):
         # all_tensor = []
         betas=torch.zeros((motion.shape[0], 300),device=device).float()
         # for i in range(s):
-        batch_size = 512  # 根据显存大小调整批量大小
+        batch_size = 4096  # 根据显存大小调整批量大小
         num_batches = (motion.shape[0] + batch_size - 1) // batch_size
 
         all_tensor = []
@@ -222,61 +222,3 @@ class FinedanceMotionDataset(BaseMotionDataset):
         contacts = contacts.transpose(1, 0)
         return contacts
     
-    def trans_smplx322_emage(self, results):
-        motion = results['motion']
-        # dataset_name = results['dataset_name']
-        import smplx
-        smplx_data_path = "/workspace/motion_diffusion/EMAGE/EMAGE"
-        smplx.create(
-            smplx_data_path+"smplx_models/", 
-            model_type='smplx',
-            gender='NEUTRAL_2020', 
-            use_face_contour=False,
-            num_betas=300,
-            num_expression_coeffs=100, 
-            ext='npz',
-            use_pca=False,
-        ).cuda().eval()
-        emage_motion = np.zeros((motion.shape[0], 169))
-        emage_motion[:, :3+63] = motion[:, :3+63]             
-        emage_motion[:, 66+9:66+90+9] = motion[:, 66:66+90]
-        emage_motion[:, 66:66+3] = motion[:, 66+90:66+93]
-        # max_length = 128
-        trans = motion[:, 309:309+3]
-        #print(n, s, r)
-        exps = motion[:, 209:209+100]
-        all_tensor = []
-        # for i in range(s):
-        with torch.no_grad():
-            joints = self.smplx(
-                betas=torch.zeros(motion.shape[0], 300).cuda(),
-                transl=trans, 
-                expression=exps, 
-                jaw_pose=emage_motion[..., 66:69], 
-                global_orient=emage_motion[...,:3], 
-                body_pose=emage_motion[...,3:21*3+3], 
-                left_hand_pose=emage_motion[...,25*3:40*3], 
-                right_hand_pose=emage_motion[...,40*3:55*3], 
-                return_verts=True,
-                return_joints=True,
-                leye_pose=torch.zeros_like(emage_motion[..., 69:72]), 
-                reye_pose=torch.zeros_like(emage_motion[..., 72:75]),
-            )['joints'][:, (7,8,10,11), :].reshape(motion.shape[0], 4, 3).cpu()
-        all_tensor.append(joints)
-        joints = torch.cat(all_tensor, axis=0) # all, 4, 3
-        # print(joints.shape)
-        feetv = torch.zeros(joints.shape[1], joints.shape[0])
-        joints = joints.permute(1, 0, 2)
-        #print(joints.shape, feetv.shape)
-        feetv[:, :-1] = (joints[:, 1:] - joints[:, :-1]).norm(dim=-1)
-        #print(feetv.shape)
-        contacts = (feetv < 0.01).numpy().astype(float)
-        # print(contacts.shape, contacts)
-        contacts = contacts.transpose(1, 0)
-        # contact = 
-        emage_motion[:, :-4] = contacts
-        results['pose'] = emage_motion
-        results['trans'] = trans
-        results['facial'] = exps
-        
-        return results
