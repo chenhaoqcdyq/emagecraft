@@ -37,13 +37,14 @@ facial_dims: 100
 word_index_num: 11195
 word_dims: 300
 batch_size: 64
-lr_base: 2e-4
+# lr_base: 2e-4
+lr_base: 2e-5
 model: vq.model
 g_name: RVQVAE
 #eval_model: motion_autoencoder
 #e_name: HalfEmbeddingNet
 trainer: aelowerfoot
-decay_epochs: 780
+decay_epochs: 50
 # audio_f: 256
 # a_pre_encoder: tcn_camn
 # a_encoder: lp

@@ -202,7 +202,7 @@ def parse_args():
     parser.add("--grad_norm", default=0, type=float)
     parser.add("--no_adv_epoch", default=999, type=int)
     parser.add("--batch_size", default=128, type=int)
-    parser.add("--opt", default="adam", type=str)
+    parser.add("--opt", default="adamw", type=str)
     parser.add("--lr_base", default=0.00025, type=float)
     parser.add("--opt_betas", default=[0.5, 0.999], type=float, nargs="*")
     parser.add("--weight_decay", default=0., type=float)

@@ -1,7 +1,7 @@
 import os
 import time
 import numpy as np
-import pyrender
+# import pyrender
 import trimesh
 import queue
 import imageio
